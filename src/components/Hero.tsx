@@ -140,7 +140,7 @@ export default function Hero() {
                       <label className="text-[10px] font-bold text-[#0f49bd] uppercase tracking-widest pl-1">
                         Phone Number
                       </label>
-                      <div className="relative">
+                      <div className="relative flex items-center">
                         <svg
                           className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0f49bd]/60"
                           fill="none"
@@ -154,11 +154,14 @@ export default function Hero() {
                             d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                           />
                         </svg>
+                        <span className="absolute left-12 top-1/2 -translate-y-1/2 text-base text-[#111318] font-medium">
+                          +1
+                        </span>
                         <input
                           type="tel"
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                          className="w-full pl-12 pr-4 py-4 rounded-lg border border-gray-200 focus:border-[#0f49bd]/50 focus:ring-2 focus:ring-[#0f49bd]/20 text-base bg-gray-50/50 text-[#111318] transition-all outline-none placeholder:text-gray-400"
+                          className="w-full pl-[4.5rem] pr-4 py-4 rounded-lg border border-gray-200 focus:border-[#0f49bd]/50 focus:ring-2 focus:ring-[#0f49bd]/20 text-base bg-gray-50/50 text-[#111318] transition-all outline-none placeholder:text-gray-400"
                           placeholder="(555) 000-0000"
                           required
                         />
@@ -170,7 +173,7 @@ export default function Hero() {
                       </label>
                       <div className="relative">
                         <svg
-                          className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0f49bd]/60"
+                          className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0f49bd]/60 pointer-events-none z-10"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -182,13 +185,24 @@ export default function Hero() {
                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                           />
                         </svg>
-                        <input
-                          type="text"
+                        <select
                           value={formData.callTime}
                           onChange={(e) => setFormData({ ...formData, callTime: e.target.value })}
-                          className="w-full pl-12 pr-4 py-4 rounded-lg border border-gray-200 focus:border-[#0f49bd]/50 focus:ring-2 focus:ring-[#0f49bd]/20 text-base bg-gray-50/50 text-[#111318] transition-all outline-none placeholder:text-gray-400"
-                          placeholder="Morning / Afternoon"
-                        />
+                          className="w-full pl-12 pr-4 py-4 rounded-lg border border-gray-200 focus:border-[#0f49bd]/50 focus:ring-2 focus:ring-[#0f49bd]/20 text-base bg-gray-50/50 text-[#111318] transition-all outline-none appearance-none cursor-pointer"
+                          style={{
+                            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%230f49bd'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'right 1rem center',
+                            backgroundSize: '1.25rem'
+                          }}
+                        >
+                          <option value="" disabled>
+                            Select preference
+                          </option>
+                          <option value="morning">Morning (9AM - 12PM)</option>
+                          <option value="afternoon">Afternoon (12PM - 5PM)</option>
+                          <option value="evening">Evening (5PM - 8PM)</option>
+                        </select>
                       </div>
                     </div>
                   </div>
