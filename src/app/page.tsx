@@ -6,6 +6,7 @@ import Services from "@/components/Services";
 import Values from "@/components/Values";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import Destinations from "@/components/Destinations";
+import FlightRoutes from "@/components/FlightRoutes";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
         <Services />
         <Expertise />
         <Destinations />
+        <FlightRoutes />
         <Values />
         <WhyChooseUs />
       </main>
