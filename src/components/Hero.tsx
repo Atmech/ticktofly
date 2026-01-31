@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import AirportAutocomplete from "./AirportAutocomplete";
+import { US_AIRPORTS } from "@/data/airports";
 
 export default function Hero() {
   const [formData, setFormData] = useState({
@@ -112,77 +114,25 @@ export default function Hero() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                  {/* Origin Field */}
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-bold text-[#0f49bd] uppercase tracking-widest pl-1">
-                      Flying From
-                    </label>
-                    <div className="relative">
-                      <svg
-                        className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0f49bd]"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                      </svg>
-                      <input
-                        type="text"
-                        value={formData.origin}
-                        onChange={(e) => setFormData({ ...formData, origin: e.target.value })}
-                        className="w-full pl-12 pr-4 py-4 rounded-lg border border-gray-200 focus:border-[#0f49bd]/50 focus:ring-2 focus:ring-[#0f49bd]/20 text-base bg-gray-50/50 text-[#111318] transition-all outline-none placeholder:text-gray-400"
-                        placeholder="City or airport"
-                        required
-                      />
-                    </div>
-                  </div>
+                  {/* Origin Field - Autocomplete */}
+                  <AirportAutocomplete
+                    airports={US_AIRPORTS}
+                    value={formData.origin}
+                    onChange={(value) => setFormData({ ...formData, origin: value })}
+                    placeholder="City or airport code"
+                    label="Flying From"
+                    required
+                  />
 
-                  {/* Destination Field */}
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-bold text-[#0f49bd] uppercase tracking-widest pl-1">
-                      Destination
-                    </label>
-                    <div className="relative">
-                      <svg
-                        className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0f49bd]"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                      </svg>
-                      <input
-                        type="text"
-                        value={formData.destination}
-                        onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-                        className="w-full pl-12 pr-4 py-4 rounded-lg border border-gray-200 focus:border-[#0f49bd]/50 focus:ring-2 focus:ring-[#0f49bd]/20 text-base bg-gray-50/50 text-[#111318] transition-all outline-none placeholder:text-gray-400"
-                        placeholder="Where do you wish to go?"
-                        required
-                      />
-                    </div>
-                  </div>
+                  {/* Destination Field - Autocomplete */}
+                  <AirportAutocomplete
+                    airports={US_AIRPORTS}
+                    value={formData.destination}
+                    onChange={(value) => setFormData({ ...formData, destination: value })}
+                    placeholder="Where do you wish to go?"
+                    label="Destination"
+                    required
+                  />
 
                   {/* Phone & Call Time */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
