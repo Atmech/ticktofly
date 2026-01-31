@@ -2,14 +2,26 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #111318;
+  --primary: #0f49bd;
+  --primary-light: #1a5cd9;
+  --primary-dark: #0a3a9e;
+  --navy-dark: #051024;
+  --background-light: #f8f9fa;
+  --background-dark: #101622;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-primary-dark: var(--primary-dark);
+  --color-navy-dark: var(--navy-dark);
+  --color-background-light: var(--background-light);
+  --color-background-dark: var(--background-dark);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-montserrat);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,8 +31,116 @@
   }
 }
 
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Selection color */
+::selection {
+  background-color: rgba(15, 73, 189, 0.2);
+}
+
+/* Form input placeholder */
+.form-input::placeholder {
+  color: #94a3b8;
+}
+
+/* Hero gradient overlay */
+.hero-overlay {
+  background: linear-gradient(
+    to right,
+    rgba(5, 16, 36, 0.85) 0%,
+    rgba(5, 16, 36, 0.6) 50%,
+    rgba(5, 16, 36, 0.4) 100%
+  );
+}
+
+/* Card hover animation */
+.card-hover {
+  transition: all 0.3s ease;
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+}
+
+/* Button hover effect */
+.btn-primary {
+  background: var(--primary);
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px -8px rgba(15, 73, 189, 0.4);
+}
+.btn-primary:hover {
+  background: var(--primary-light);
+  box-shadow: 0 12px 32px -8px rgba(15, 73, 189, 0.5);
+}
+
+/* Flight icon rotation */
+.flight-icon {
+  transition: transform 0.3s ease;
+}
+.group:hover .flight-icon {
+  transform: rotate(-45deg);
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease forwards;
+}
+
+/* Image scale on hover */
+.image-scale {
+  transition: transform 0.7s ease;
+}
+.group:hover .image-scale {
+  transform: scale(1.05);
+}
+
+/* Pulse animation for online indicator */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+.animate-pulse-slow {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
