@@ -2,43 +2,28 @@
 
 import { useState } from "react";
 import AirportAutocomplete from "./AirportAutocomplete";
-import { US_AIRPORTS } from "@/data/airports";
+import DateRangePicker from "./DateRangePicker";
+import TravelersDropdown from "./TravelersDropdown";
 import { GLOBAL_AIRPORTS } from "@/data/globalAirports";
 
 export default function Hero() {
   const [formData, setFormData] = useState({
+    name: "",
     origin: "",
     destination: "",
+    tripType: "roundtrip" as "roundtrip" | "oneway",
     departureDate: "",
     returnDate: "",
     adults: 1,
     children: 0,
     childAges: [] as number[],
+    infants: 0,
+    cabinClass: "economy" as "economy" | "premium" | "business" | "first",
     phone: "",
     callTime: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
-
-  const handleChildrenChange = (count: number) => {
-    const newChildAges = [...formData.childAges];
-    if (count > formData.childAges.length) {
-      // Add new entries with default age 0
-      while (newChildAges.length < count) {
-        newChildAges.push(0);
-      }
-    } else {
-      // Remove extra entries
-      newChildAges.splice(count);
-    }
-    setFormData({ ...formData, children: count, childAges: newChildAges });
-  };
-
-  const handleChildAgeChange = (index: number, age: number) => {
-    const newChildAges = [...formData.childAges];
-    newChildAges[index] = age;
-    setFormData({ ...formData, childAges: newChildAges });
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +41,21 @@ export default function Hero() {
 
       if (response.ok) {
         setSubmitStatus("success");
-        setFormData({ origin: "", destination: "", departureDate: "", returnDate: "", adults: 1, children: 0, childAges: [], phone: "", callTime: "" });
+        setFormData({
+          name: "",
+          origin: "",
+          destination: "",
+          tripType: "roundtrip",
+          departureDate: "",
+          returnDate: "",
+          adults: 1,
+          children: 0,
+          childAges: [],
+          infants: 0,
+          cabinClass: "economy",
+          phone: "",
+          callTime: "",
+        });
       } else {
         setSubmitStatus("error");
       }
@@ -65,6 +64,13 @@ export default function Hero() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const cabinClassLabels = {
+    economy: "Economy",
+    premium: "Premium Economy",
+    business: "Business",
+    first: "First Class",
   };
 
   return (
@@ -140,6 +146,62 @@ export default function Hero() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                  {/* Trip Type Toggle */}
+                  <div className="flex items-center gap-2 p-1 bg-gray-100 rounded-lg w-fit">
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, tripType: "roundtrip", returnDate: "" })}
+                      className={`px-4 py-2 rounded-md text-sm font-semibold transition-all cursor-pointer ${
+                        formData.tripType === "roundtrip"
+                          ? "bg-white text-[#0f49bd] shadow-sm"
+                          : "text-gray-500 hover:text-gray-700"
+                      }`}
+                    >
+                      Round-trip
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, tripType: "oneway", returnDate: "" })}
+                      className={`px-4 py-2 rounded-md text-sm font-semibold transition-all cursor-pointer ${
+                        formData.tripType === "oneway"
+                          ? "bg-white text-[#0f49bd] shadow-sm"
+                          : "text-gray-500 hover:text-gray-700"
+                      }`}
+                    >
+                      One-way
+                    </button>
+                  </div>
+
+                  {/* Name Field */}
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold text-[#0f49bd] uppercase tracking-widest pl-1">
+                      Your Name
+                    </label>
+                    <div className="relative">
+                      <svg
+                        className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0f49bd]/60 pointer-events-none"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                      <input
+                        type="text"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-200 focus:border-[#0f49bd]/50 focus:ring-2 focus:ring-[#0f49bd]/20 text-sm bg-gray-50/50 text-[#111318] transition-all outline-none placeholder:text-gray-400"
+                        placeholder="Enter your full name"
+                        required
+                      />
+                    </div>
+                  </div>
+
                   {/* Origin Field - Global Airports */}
                   <AirportAutocomplete
                     airports={GLOBAL_AIRPORTS}
@@ -160,72 +222,32 @@ export default function Hero() {
                     required
                   />
 
-                  {/* Departure & Return Dates */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[10px] font-bold text-[#0f49bd] uppercase tracking-widest pl-1">
-                        Departure Date
-                      </label>
-                      <div className="relative">
-                        <svg
-                          className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0f49bd]/60 pointer-events-none z-10"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                          />
-                        </svg>
-                        <input
-                          type="date"
-                          value={formData.departureDate}
-                          onChange={(e) => setFormData({ ...formData, departureDate: e.target.value })}
-                          onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
-                          min={new Date().toISOString().split('T')[0]}
-                          className="w-full pl-12 pr-3 py-3 rounded-lg border border-gray-200 focus:border-[#0f49bd]/50 focus:ring-2 focus:ring-[#0f49bd]/20 text-sm bg-gray-50/50 text-[#111318] transition-all outline-none cursor-pointer"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[10px] font-bold text-[#0f49bd] uppercase tracking-widest pl-1">
-                        Return Date
-                      </label>
-                      <div className="relative">
-                        <svg
-                          className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0f49bd]/60 pointer-events-none z-10"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                          />
-                        </svg>
-                        <input
-                          type="date"
-                          value={formData.returnDate}
-                          onChange={(e) => setFormData({ ...formData, returnDate: e.target.value })}
-                          onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
-                          min={formData.departureDate || new Date().toISOString().split('T')[0]}
-                          className="w-full pl-12 pr-3 py-3 rounded-lg border border-gray-200 focus:border-[#0f49bd]/50 focus:ring-2 focus:ring-[#0f49bd]/20 text-sm bg-gray-50/50 text-[#111318] transition-all outline-none cursor-pointer"
-                        />
-                      </div>
-                    </div>
-                  </div>
+                  {/* Date Range Picker */}
+                  <DateRangePicker
+                    departureDate={formData.departureDate}
+                    returnDate={formData.returnDate}
+                    onDepartureDateChange={(date) => setFormData({ ...formData, departureDate: date })}
+                    onReturnDateChange={(date) => setFormData({ ...formData, returnDate: date })}
+                    tripType={formData.tripType}
+                  />
 
-                  {/* Travelers Section */}
+                  {/* Travelers & Cabin Class Row */}
                   <div className="grid grid-cols-2 gap-3">
+                    {/* Travelers Dropdown */}
+                    <TravelersDropdown
+                      adults={formData.adults}
+                      children={formData.children}
+                      childAges={formData.childAges}
+                      infants={formData.infants}
+                      onAdultsChange={(count) => setFormData({ ...formData, adults: count })}
+                      onChildrenChange={(count, ages) => setFormData({ ...formData, children: count, childAges: ages })}
+                      onInfantsChange={(count) => setFormData({ ...formData, infants: count })}
+                    />
+
+                    {/* Cabin Class */}
                     <div className="flex flex-col gap-2">
                       <label className="text-[10px] font-bold text-[#0f49bd] uppercase tracking-widest pl-1">
-                        Adults (12+)
+                        Cabin Class
                       </label>
                       <div className="relative">
                         <svg
@@ -238,12 +260,12 @@ export default function Hero() {
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
                           />
                         </svg>
                         <select
-                          value={formData.adults}
-                          onChange={(e) => setFormData({ ...formData, adults: parseInt(e.target.value) })}
+                          value={formData.cabinClass}
+                          onChange={(e) => setFormData({ ...formData, cabinClass: e.target.value as typeof formData.cabinClass })}
                           className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-200 focus:border-[#0f49bd]/50 focus:ring-2 focus:ring-[#0f49bd]/20 text-sm bg-gray-50/50 text-[#111318] transition-all outline-none appearance-none cursor-pointer"
                           style={{
                             backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%230f49bd'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
@@ -252,81 +274,14 @@ export default function Hero() {
                             backgroundSize: '1rem'
                           }}
                         >
-                          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-                            <option key={num} value={num}>{num}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[10px] font-bold text-[#0f49bd] uppercase tracking-widest pl-1">
-                        Children (0-12)
-                      </label>
-                      <div className="relative">
-                        <svg
-                          className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0f49bd]/60 pointer-events-none"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
-                          />
-                        </svg>
-                        <select
-                          value={formData.children}
-                          onChange={(e) => handleChildrenChange(parseInt(e.target.value))}
-                          className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-200 focus:border-[#0f49bd]/50 focus:ring-2 focus:ring-[#0f49bd]/20 text-sm bg-gray-50/50 text-[#111318] transition-all outline-none appearance-none cursor-pointer"
-                          style={{
-                            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%230f49bd'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                            backgroundRepeat: 'no-repeat',
-                            backgroundPosition: 'right 0.75rem center',
-                            backgroundSize: '1rem'
-                          }}
-                        >
-                          {[0, 1, 2, 3, 4, 5, 6].map((num) => (
-                            <option key={num} value={num}>{num}</option>
-                          ))}
+                          <option value="economy">{cabinClassLabels.economy}</option>
+                          <option value="premium">{cabinClassLabels.premium}</option>
+                          <option value="business">{cabinClassLabels.business}</option>
+                          <option value="first">{cabinClassLabels.first}</option>
                         </select>
                       </div>
                     </div>
                   </div>
-
-                  {/* Child Ages - Dynamic based on children count */}
-                  {formData.children > 0 && (
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[10px] font-bold text-[#0f49bd] uppercase tracking-widest pl-1">
-                        Child Ages
-                      </label>
-                      <div className={`grid gap-2 ${formData.children <= 3 ? `grid-cols-${formData.children}` : 'grid-cols-3'}`}>
-                        {formData.childAges.map((age, index) => (
-                          <div key={index} className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[#0f49bd]/60 font-medium">
-                              #{index + 1}
-                            </span>
-                            <select
-                              value={age}
-                              onChange={(e) => handleChildAgeChange(index, parseInt(e.target.value))}
-                              className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#0f49bd]/50 focus:ring-2 focus:ring-[#0f49bd]/20 text-sm bg-gray-50/50 text-[#111318] transition-all outline-none appearance-none cursor-pointer"
-                              style={{
-                                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%230f49bd'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                                backgroundRepeat: 'no-repeat',
-                                backgroundPosition: 'right 0.5rem center',
-                                backgroundSize: '0.875rem'
-                              }}
-                            >
-                              {Array.from({ length: 13 }, (_, i) => (
-                                <option key={i} value={i}>{i} {i === 1 ? 'year' : 'years'}</option>
-                              ))}
-                            </select>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
 
                   {/* Phone & Call Time */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -405,7 +360,7 @@ export default function Hero() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="mt-3 w-full bg-[#0f49bd] hover:bg-[#1a5cd9] disabled:bg-[#0f49bd]/70 text-white font-bold font-[family-name:var(--font-montserrat)] text-lg py-4 rounded-lg shadow-lg shadow-[#0f49bd]/30 hover:shadow-[#0f49bd]/50 transition-all active:scale-[0.99] flex items-center justify-center gap-2"
+                    className="mt-3 w-full bg-[#0f49bd] hover:bg-[#1a5cd9] disabled:bg-[#0f49bd]/70 text-white font-bold font-[family-name:var(--font-montserrat)] text-lg py-4 rounded-lg shadow-lg shadow-[#0f49bd]/30 hover:shadow-[#0f49bd]/50 transition-all active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
                   >
                     {isSubmitting ? (
                       <>

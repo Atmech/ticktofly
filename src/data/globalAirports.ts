@@ -76,9 +76,16 @@ export const GLOBAL_AIRPORTS: GlobalAirport[] = [
     { code: "KUL", name: "Kuala Lumpur International", city: "Kuala Lumpur", country: "Malaysia" },
     { code: "DEL", name: "Indira Gandhi International", city: "New Delhi", country: "India" },
     { code: "BOM", name: "Chhatrapati Shivaji Maharaj", city: "Mumbai", country: "India" },
+    { code: "BLR", name: "Kempegowda International", city: "Bengaluru", country: "India" },
+    { code: "CCU", name: "Netaji Subhas Chandra Bose International", city: "Kolkata", country: "India" },
+    { code: "HYD", name: "Rajiv Gandhi International", city: "Hyderabad", country: "India" },
+    { code: "DPS", name: "Ngurah Rai International", city: "Denpasar", country: "Indonesia" },
+    { code: "CGK", name: "Soekarno-Hatta International", city: "Jakarta", country: "Indonesia" },
     { code: "SYD", name: "Sydney Kingsford Smith", city: "Sydney", country: "Australia" },
     { code: "MEL", name: "Melbourne Airport", city: "Melbourne", country: "Australia" },
     { code: "AKL", name: "Auckland Airport", city: "Auckland", country: "New Zealand" },
+    { code: "MLE", name: "Velana International Airport", city: "Malé", country: "Maldives" },
+    
 
     // Major International Airports - Middle East
     { code: "DXB", name: "Dubai International", city: "Dubai", country: "UAE" },
@@ -86,6 +93,12 @@ export const GLOBAL_AIRPORTS: GlobalAirport[] = [
     { code: "DOH", name: "Hamad International", city: "Doha", country: "Qatar" },
     { code: "TLV", name: "Ben Gurion Airport", city: "Tel Aviv", country: "Israel" },
     { code: "JED", name: "King Abdulaziz International", city: "Jeddah", country: "Saudi Arabia" },
+    { code: "RUH", name: "King Khalid International", city: "Riyadh", country: "Saudi Arabia" },
+    { code: "AMM", name: "Queen Alia International", city: "Amman", country: "Jordan" },
+    { code: "KWI", name: "Kuwait International", city: "Kuwait City", country: "Kuwait" },
+    { code: "MCT", name: "Muscat International", city: "Muscat", country: "Oman" },
+    { code: "BAH", name: "Bahrain International", city: "Manama", country: "Bahrain" },
+
 
     // Major International Airports - Americas
     { code: "YYZ", name: "Toronto Pearson International", city: "Toronto", country: "Canada" },
@@ -107,10 +120,13 @@ export const GLOBAL_AIRPORTS: GlobalAirport[] = [
     { code: "NBO", name: "Jomo Kenyatta International", city: "Nairobi", country: "Kenya" },
     { code: "CMN", name: "Mohammed V International", city: "Casablanca", country: "Morocco" },
 
+
     // Caribbean
     { code: "SJU", name: "Luis Muñoz Marín International", city: "San Juan", country: "Puerto Rico" },
     { code: "NAS", name: "Lynden Pindling International", city: "Nassau", country: "Bahamas" },
     { code: "MBJ", name: "Sangster International", city: "Montego Bay", country: "Jamaica" },
     { code: "PUJ", name: "Punta Cana International", city: "Punta Cana", country: "Dominican Republic" },
     { code: "AUA", name: "Queen Beatrix International", city: "Oranjestad", country: "Aruba" },
+    { code: "SJU", name: "Luis Muñoz Marín International", city: "San Juan", country: "Puerto Rico" },
+    
 ];
