@@ -8,6 +8,7 @@ interface DateRangePickerProps {
   onDepartureDateChange: (date: string) => void;
   onReturnDateChange: (date: string) => void;
   tripType: "roundtrip" | "oneway";
+  onTripTypeChange?: (type: "roundtrip" | "oneway") => void;
 }
 
 export default function DateRangePicker({
@@ -16,6 +17,7 @@ export default function DateRangePicker({
   onDepartureDateChange,
   onReturnDateChange,
   tripType,
+  onTripTypeChange,
 }: DateRangePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(() => {
@@ -23,6 +25,7 @@ export default function DateRangePicker({
     return new Date(today.getFullYear(), today.getMonth(), 1);
   });
   const [selectingReturn, setSelectingReturn] = useState(false);
+  const [showReturnPrompt, setShowReturnPrompt] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Close on click outside
@@ -91,7 +94,7 @@ export default function DateRangePicker({
     
     if (tripType === "oneway") {
       onDepartureDateChange(dateStr);
-      setIsOpen(false);
+      setShowReturnPrompt(true);
       return;
     }
 
@@ -169,7 +172,10 @@ export default function DateRangePicker({
         <button
           key={day}
           type="button"
-          onClick={() => handleDateClick(year, month, day)}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDateClick(year, month, day);
+          }}
           disabled={disabled}
           className={dayClasses}
         >
@@ -249,11 +255,50 @@ export default function DateRangePicker({
           style={{ 
             animation: "fadeIn 0.15s ease-out",
             width: "min(640px, calc(100vw - 32px))",
-            maxWidth: "100%"
+            maxWidth: "calc(100vw - 32px)"
           }}
         >
-          {/* Nudge message - only show when selecting return */}
-          {showNudge && (
+          {/* Return date prompt - show when departure selected in one-way mode */}
+          {showReturnPrompt && tripType === "oneway" && departureDate && (
+            <div className="px-6 py-4 bg-gradient-to-r from-[#0f49bd]/5 via-[#4d8aff]/10 to-[#0f49bd]/5 rounded-t-2xl">
+              <p className="text-sm text-[#111318] text-center font-medium mb-3">
+                Departure: <span className="font-semibold text-[#0f49bd]">{formatFullDate(departureDate)}</span>
+              </p>
+              <p className="text-sm text-gray-600 text-center mb-3">
+                Would you like to add a return date?
+              </p>
+              <div className="flex gap-3 justify-center">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowReturnPrompt(false);
+                    if (onTripTypeChange) {
+                      onTripTypeChange("roundtrip");
+                    }
+                    setSelectingReturn(true);
+                  }}
+                  className="px-4 py-2 text-sm font-semibold text-white bg-[#0f49bd] hover:bg-[#1a5cd9] rounded-lg transition-colors cursor-pointer"
+                >
+                  Yes, Add Return Date
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowReturnPrompt(false);
+                    setIsOpen(false);
+                  }}
+                  className="px-4 py-2 text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors cursor-pointer"
+                >
+                  No, One-Way Only
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Nudge message - only show when selecting return in roundtrip mode */}
+          {showNudge && !showReturnPrompt && (
             <div className="px-6 py-3 bg-gradient-to-r from-[#0f49bd]/5 via-[#4d8aff]/10 to-[#0f49bd]/5 rounded-t-2xl">
               <p className="text-sm text-[#0f49bd] text-center font-semibold flex items-center justify-center gap-2">
                 <span className="text-base">✨</span> 
@@ -263,10 +308,13 @@ export default function DateRangePicker({
           )}
           
           {/* Header with navigation */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-gray-100">
             <button
               type="button"
-              onClick={goToPrevMonth}
+              onClick={(e) => {
+                e.stopPropagation();
+                goToPrevMonth();
+              }}
               disabled={!canGoPrev()}
               className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
                 canGoPrev() 
@@ -283,7 +331,10 @@ export default function DateRangePicker({
             </span>
             <button
               type="button"
-              onClick={goToNextMonth}
+              onClick={(e) => {
+                e.stopPropagation();
+                goToNextMonth();
+              }}
               className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100 transition-all cursor-pointer text-gray-700"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -293,15 +344,15 @@ export default function DateRangePicker({
           </div>
 
           {/* Calendars - responsive layout */}
-          <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="p-4 md:p-6 max-h-[60vh] overflow-y-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {renderMonth(0)}
               {renderMonth(1)}
             </div>
           </div>
 
           {/* Footer */}
-          <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl flex items-center justify-between">
+          <div className="px-4 md:px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl flex items-center justify-between">
             <div className="text-sm text-gray-600">
               {departureDate ? (
                 <span className="font-medium">
@@ -316,7 +367,8 @@ export default function DateRangePicker({
             </div>
             <button
               type="button"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setIsOpen(false);
                 setSelectingReturn(false);
               }}

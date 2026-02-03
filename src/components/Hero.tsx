@@ -11,7 +11,7 @@ export default function Hero() {
     name: "",
     origin: "",
     destination: "",
-    tripType: "roundtrip" as "roundtrip" | "oneway",
+    tripType: "oneway" as "roundtrip" | "oneway",
     departureDate: "",
     returnDate: "",
     adults: 1,
@@ -45,7 +45,7 @@ export default function Hero() {
           name: "",
           origin: "",
           destination: "",
-          tripType: "roundtrip",
+          tripType: "oneway",
           departureDate: "",
           returnDate: "",
           adults: 1,
@@ -146,31 +146,7 @@ export default function Hero() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                  {/* Trip Type Toggle */}
-                  <div className="flex items-center gap-2 p-1 bg-gray-100 rounded-lg w-fit">
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, tripType: "roundtrip", returnDate: "" })}
-                      className={`px-4 py-2 rounded-md text-sm font-semibold transition-all cursor-pointer ${
-                        formData.tripType === "roundtrip"
-                          ? "bg-white text-[#0f49bd] shadow-sm"
-                          : "text-gray-500 hover:text-gray-700"
-                      }`}
-                    >
-                      Round-trip
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, tripType: "oneway", returnDate: "" })}
-                      className={`px-4 py-2 rounded-md text-sm font-semibold transition-all cursor-pointer ${
-                        formData.tripType === "oneway"
-                          ? "bg-white text-[#0f49bd] shadow-sm"
-                          : "text-gray-500 hover:text-gray-700"
-                      }`}
-                    >
-                      One-way
-                    </button>
-                  </div>
+
 
                   {/* Name Field */}
                   <div className="flex flex-col gap-2">
@@ -229,6 +205,7 @@ export default function Hero() {
                     onDepartureDateChange={(date) => setFormData({ ...formData, departureDate: date })}
                     onReturnDateChange={(date) => setFormData({ ...formData, returnDate: date })}
                     tripType={formData.tripType}
+                    onTripTypeChange={(type) => setFormData({ ...formData, tripType: type })}
                   />
 
                   {/* Travelers & Cabin Class Row */}

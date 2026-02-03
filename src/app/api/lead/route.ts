@@ -4,7 +4,21 @@ import nodemailer from "nodemailer";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { origin, destination, phone, callTime } = body;
+    const {
+      name,
+      origin,
+      destination,
+      tripType,
+      departureDate,
+      returnDate,
+      adults,
+      children,
+      childAges,
+      infants,
+      cabinClass,
+      phone,
+      callTime
+    } = body;
 
     // Validate required fields
     if (!origin || !destination || !phone) {
@@ -34,6 +48,21 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Helper function to format dates
+    const formatDate = (dateStr: string) => {
+      if (!dateStr) return "Not specified";
+      const date = new Date(dateStr + "T00:00:00");
+      return date.toLocaleDateString("en-US", { weekday: "short", month: "long", day: "numeric", year: "numeric" });
+    };
+
+    // Helper function to format cabin class
+    const cabinClassLabels: Record<string, string> = {
+      economy: "Economy",
+      premium: "Premium Economy",
+      business: "Business Class",
+      first: "First Class"
+    };
+
     // Email content
     const emailHtml = `
 <!DOCTYPE html>
@@ -44,10 +73,13 @@ export async function POST(request: NextRequest) {
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
     .header { background: #0f49bd; color: white; padding: 20px; text-align: center; }
     .content { background: #f8f9fa; padding: 30px; margin: 20px 0; }
-    .field { margin-bottom: 15px; }
-    .label { font-weight: bold; color: #0f49bd; }
-    .value { margin-top: 5px; }
+    .section { margin-bottom: 25px; }
+    .section-title { font-size: 16px; font-weight: bold; color: #0f49bd; margin-bottom: 10px; border-bottom: 2px solid #0f49bd; padding-bottom: 5px; }
+    .field { margin-bottom: 12px; }
+    .label { font-weight: bold; color: #555; }
+    .value { margin-top: 3px; color: #111; }
     .footer { text-align: center; color: #666; font-size: 12px; padding: 20px; }
+    .highlight { background: #fff3cd; padding: 2px 6px; border-radius: 3px; }
   </style>
 </head>
 <body>
@@ -56,27 +88,82 @@ export async function POST(request: NextRequest) {
       <h1>✈️ New Lead from TickToFly Website</h1>
     </div>
     <div class="content">
-      <div class="field">
-        <div class="label">Flying From:</div>
-        <div class="value">${origin}</div>
+      <div class="section">
+        <div class="section-title">👤 Customer Information</div>
+        <div class="field">
+          <div class="label">Name:</div>
+          <div class="value">${name || "Not provided"}</div>
+        </div>
+        <div class="field">
+          <div class="label">Phone Number:</div>
+          <div class="value"><span class="highlight">+1 ${phone}</span></div>
+        </div>
+        <div class="field">
+          <div class="label">Preferred Call Time:</div>
+          <div class="value">${callTime || "Not specified"}</div>
+        </div>
       </div>
-      <div class="field">
-        <div class="label">Destination:</div>
-        <div class="value">${destination}</div>
+
+      <div class="section">
+        <div class="section-title">🛫 Flight Details</div>
+        <div class="field">
+          <div class="label">Trip Type:</div>
+          <div class="value">${tripType === "roundtrip" ? "Round-trip" : "One-way"}</div>
+        </div>
+        <div class="field">
+          <div class="label">Flying From:</div>
+          <div class="value">${origin}</div>
+        </div>
+        <div class="field">
+          <div class="label">Destination:</div>
+          <div class="value">${destination}</div>
+        </div>
+        <div class="field">
+          <div class="label">Departure Date:</div>
+          <div class="value">${formatDate(departureDate)}</div>
+        </div>
+        ${tripType === "roundtrip" ? `
+        <div class="field">
+          <div class="label">Return Date:</div>
+          <div class="value">${formatDate(returnDate)}</div>
+        </div>
+        ` : ""}
       </div>
-      <div class="field">
-        <div class="label">Phone Number:</div>
-        <div class="value">${phone}</div>
+
+      <div class="section">
+        <div class="section-title">👥 Travelers</div>
+        <div class="field">
+          <div class="label">Adults:</div>
+          <div class="value">${adults || 0}</div>
+        </div>
+        <div class="field">
+          <div class="label">Children:</div>
+          <div class="value">${children || 0}${children > 0 && childAges?.length > 0 ? ` (Ages: ${childAges.join(", ")})` : ""}</div>
+        </div>
+        <div class="field">
+          <div class="label">Infants:</div>
+          <div class="value">${infants || 0}</div>
+        </div>
+        <div class="field">
+          <div class="label"><strong>Total Travelers:</strong></div>
+          <div class="value"><strong>${(adults || 0) + (children || 0) + (infants || 0)}</strong></div>
+        </div>
       </div>
-      <div class="field">
-        <div class="label">Preferred Call Time:</div>
-        <div class="value">${callTime || "Not specified"}</div>
+
+      <div class="section">
+        <div class="section-title">💺 Cabin Class</div>
+        <div class="field">
+          <div class="value">${cabinClassLabels[cabinClass] || cabinClass || "Not specified"}</div>
+        </div>
       </div>
-      <div class="field">
-        <div class="label">Submitted:</div>
-        <div class="value">${new Date().toLocaleString("en-US", {
+
+      <div class="section">
+        <div class="field">
+          <div class="label">Submitted:</div>
+          <div class="value">${new Date().toLocaleString("en-US", {
       timeZone: "America/New_York",
     })} (ET)</div>
+        </div>
       </div>
     </div>
     <div class="footer">
@@ -92,13 +179,37 @@ export async function POST(request: NextRequest) {
 New Lead from TickToFly Website
 
 ========================
-LEAD DETAILS
+CUSTOMER INFORMATION
 ========================
 
+Name: ${name || "Not provided"}
+Phone Number: +1 ${phone}
+Preferred Call Time: ${callTime || "Not specified"}
+
+========================
+FLIGHT DETAILS
+========================
+
+Trip Type: ${tripType === "roundtrip" ? "Round-trip" : "One-way"}
 Flying From: ${origin}
 Destination: ${destination}
-Phone Number: ${phone}
-Preferred Call Time: ${callTime || "Not specified"}
+Departure Date: ${formatDate(departureDate)}${tripType === "roundtrip" ? `
+Return Date: ${formatDate(returnDate)}` : ""}
+
+========================
+TRAVELERS
+========================
+
+Adults: ${adults || 0}
+Children: ${children || 0}${children > 0 && childAges?.length > 0 ? ` (Ages: ${childAges.join(", ")})` : ""}
+Infants: ${infants || 0}
+Total Travelers: ${(adults || 0) + (children || 0) + (infants || 0)}
+
+========================
+CABIN CLASS
+========================
+
+${cabinClassLabels[cabinClass] || cabinClass || "Not specified"}
 
 ========================
 
@@ -121,6 +232,7 @@ Please follow up as soon as possible.
     });
 
     console.log("✅ Lead email sent successfully");
+    console.log(`Customer: ${name || "Not provided"}`);
     console.log(`From: ${origin} → To: ${destination}`);
     console.log(`Contact: ${phone}`);
 
