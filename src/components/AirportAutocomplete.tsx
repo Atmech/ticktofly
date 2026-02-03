@@ -1,10 +1,18 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Airport } from "@/data/airports";
+
+// Flexible airport type that works with both US and global airports
+interface FlexibleAirport {
+  code: string;
+  name: string;
+  city: string;
+  state?: string;
+  country?: string;
+}
 
 interface AirportAutocompleteProps {
-  airports: Airport[];
+  airports: FlexibleAirport[];
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
@@ -21,10 +29,15 @@ export default function AirportAutocomplete({
   required = false,
 }: AirportAutocompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [filteredAirports, setFilteredAirports] = useState<Airport[]>([]);
+  const [filteredAirports, setFilteredAirports] = useState<FlexibleAirport[]>([]);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Get location text (state for US, country for international)
+  const getLocationText = (airport: FlexibleAirport) => {
+    return airport.state || airport.country || "";
+  };
 
   useEffect(() => {
     if (value.length > 0) {
@@ -34,7 +47,7 @@ export default function AirportAutocomplete({
           airport.code.toLowerCase().includes(searchTerm) ||
           airport.name.toLowerCase().includes(searchTerm) ||
           airport.city.toLowerCase().includes(searchTerm) ||
-          airport.state.toLowerCase().includes(searchTerm)
+          getLocationText(airport).toLowerCase().includes(searchTerm)
       );
       setFilteredAirports(filtered.slice(0, 8)); // Limit to 8 results
     } else {
@@ -64,8 +77,9 @@ export default function AirportAutocomplete({
     setHighlightedIndex(-1);
   };
 
-  const handleSelect = (airport: Airport) => {
-    onChange(`${airport.city}, ${airport.state} (${airport.code})`);
+  const handleSelect = (airport: FlexibleAirport) => {
+    const location = getLocationText(airport);
+    onChange(`${airport.city}, ${location} (${airport.code})`);
     setIsOpen(false);
     setHighlightedIndex(-1);
   };
@@ -155,7 +169,7 @@ export default function AirportAutocomplete({
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="font-semibold text-[#111318] text-sm">
-                      {airport.city}, {airport.state}
+                      {airport.city}, {getLocationText(airport)}
                     </div>
                     <div className="text-xs text-gray-500 mt-0.5">
                       {airport.name}
