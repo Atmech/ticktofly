@@ -121,99 +121,125 @@ export default function TravelersDropdown({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 p-5 z-50 animate-fade-in">
-          {/* Adults */}
-          <div className="flex items-center justify-between py-3 border-b border-gray-100">
-            <div>
-              <div className="font-semibold text-[#111318]">Adults</div>
-              <div className="text-xs text-gray-400">Age 12+</div>
+        <>
+          {/* Mobile: Bottom sheet overlay */}
+          <div 
+            className="md:hidden fixed inset-0 bg-black/50 z-40 animate-fade-in"
+            onClick={() => setIsOpen(false)}
+          />
+          
+          {/* Desktop: Dropdown / Mobile: Bottom sheet */}
+          <div className="
+            md:absolute md:top-full md:left-0 md:right-0 md:mt-2 md:rounded-xl
+            fixed bottom-0 left-0 right-0 md:bottom-auto
+            bg-white rounded-t-2xl md:rounded-xl shadow-2xl border border-gray-100 p-5 z-50 animate-fade-in
+            max-h-[80vh] overflow-y-auto
+          ">
+            {/* Mobile header */}
+            <div className="md:hidden flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
+              <h3 className="font-semibold text-[#111318]">Select Travelers</h3>
+              <button
+                type="button"
+                onClick={() => setIsOpen(false)}
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500"
+              >
+                ✕
+              </button>
             </div>
-            <div className="flex items-center gap-4">
-              <StepperButton onClick={() => onAdultsChange(adults - 1)} disabled={adults <= 1}>
-                −
-              </StepperButton>
-              <span className="w-6 text-center font-semibold text-[#111318]">{adults}</span>
-              <StepperButton onClick={() => onAdultsChange(adults + 1)} disabled={adults >= 9}>
-                +
-              </StepperButton>
-            </div>
-          </div>
 
-          {/* Children */}
-          <div className="flex items-center justify-between py-3 border-b border-gray-100">
-            <div>
-              <div className="font-semibold text-[#111318]">Children</div>
-              <div className="text-xs text-gray-400">Ages 2-11</div>
-            </div>
-            <div className="flex items-center gap-4">
-              <StepperButton onClick={() => handleChildrenChange(children - 1)} disabled={children <= 0}>
-                −
-              </StepperButton>
-              <span className="w-6 text-center font-semibold text-[#111318]">{children}</span>
-              <StepperButton onClick={() => handleChildrenChange(children + 1)} disabled={children >= 6}>
-                +
-              </StepperButton>
-            </div>
-          </div>
-
-          {/* Child Ages */}
-          {children > 0 && (
-            <div className="py-3 border-b border-gray-100">
-              <div className="text-xs text-gray-500 mb-3">Child ages at time of travel</div>
-              <div className="grid grid-cols-3 gap-2">
-                {childAges.map((age, index) => (
-                  <div key={index} className="relative">
-                    <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-gray-400">
-                      #{index + 1}
-                    </span>
-                    <select
-                      value={age}
-                      onChange={(e) => handleChildAgeChange(index, parseInt(e.target.value))}
-                      className="w-full pl-8 pr-2 py-2 text-sm rounded-lg border border-gray-200 focus:border-[#0f49bd]/50 focus:ring-1 focus:ring-[#0f49bd]/20 bg-gray-50/50 outline-none appearance-none cursor-pointer"
-                    >
-                      {Array.from({ length: 10 }, (_, i) => i + 2).map((a) => (
-                        <option key={a} value={a}>
-                          {a} yrs
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                ))}
+            {/* Adults */}
+            <div className="flex items-center justify-between py-3 border-b border-gray-100">
+              <div>
+                <div className="font-semibold text-[#111318]">Adults</div>
+                <div className="text-xs text-gray-400">Age 12+</div>
+              </div>
+              <div className="flex items-center gap-4">
+                <StepperButton onClick={() => onAdultsChange(adults - 1)} disabled={adults <= 1}>
+                  −
+                </StepperButton>
+                <span className="w-6 text-center font-semibold text-[#111318]">{adults}</span>
+                <StepperButton onClick={() => onAdultsChange(adults + 1)} disabled={adults >= 9}>
+                  +
+                </StepperButton>
               </div>
             </div>
-          )}
 
-          {/* Infants */}
-          <div className="flex items-center justify-between py-3">
-            <div>
-              <div className="font-semibold text-[#111318]">Infants</div>
-              <div className="text-xs text-gray-400">Under 2 (on lap)</div>
+            {/* Children */}
+            <div className="flex items-center justify-between py-3 border-b border-gray-100">
+              <div>
+                <div className="font-semibold text-[#111318]">Children</div>
+                <div className="text-xs text-gray-400">Ages 2-11</div>
+              </div>
+              <div className="flex items-center gap-4">
+                <StepperButton onClick={() => handleChildrenChange(children - 1)} disabled={children <= 0}>
+                  −
+                </StepperButton>
+                <span className="w-6 text-center font-semibold text-[#111318]">{children}</span>
+                <StepperButton onClick={() => handleChildrenChange(children + 1)} disabled={children >= 6}>
+                  +
+                </StepperButton>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <StepperButton onClick={() => onInfantsChange(infants - 1)} disabled={infants <= 0}>
-                −
-              </StepperButton>
-              <span className="w-6 text-center font-semibold text-[#111318]">{infants}</span>
-              <StepperButton onClick={() => onInfantsChange(infants + 1)} disabled={infants >= adults}>
-                +
-              </StepperButton>
+
+            {/* Child Ages */}
+            {children > 0 && (
+              <div className="py-3 border-b border-gray-100">
+                <div className="text-xs text-gray-500 mb-3">Child ages at time of travel</div>
+                <div className="grid grid-cols-3 gap-2">
+                  {childAges.map((age, index) => (
+                    <div key={index} className="relative">
+                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-gray-400">
+                        #{index + 1}
+                      </span>
+                      <select
+                        value={age}
+                        onChange={(e) => handleChildAgeChange(index, parseInt(e.target.value))}
+                        className="w-full pl-8 pr-2 py-2 text-sm rounded-lg border border-gray-200 focus:border-[#0f49bd]/50 focus:ring-1 focus:ring-[#0f49bd]/20 bg-gray-50/50 outline-none appearance-none cursor-pointer"
+                      >
+                        {Array.from({ length: 10 }, (_, i) => i + 2).map((a) => (
+                          <option key={a} value={a}>
+                            {a} yrs
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Infants */}
+            <div className="flex items-center justify-between py-3">
+              <div>
+                <div className="font-semibold text-[#111318]">Infants</div>
+                <div className="text-xs text-gray-400">Under 2 (on lap)</div>
+              </div>
+              <div className="flex items-center gap-4">
+                <StepperButton onClick={() => onInfantsChange(infants - 1)} disabled={infants <= 0}>
+                  −
+                </StepperButton>
+                <span className="w-6 text-center font-semibold text-[#111318]">{infants}</span>
+                <StepperButton onClick={() => onInfantsChange(infants + 1)} disabled={infants >= adults}>
+                  +
+                </StepperButton>
+              </div>
             </div>
+            {infants > 0 && infants >= adults && (
+              <div className="text-xs text-amber-600 mt-1">
+                Maximum 1 infant per adult
+              </div>
+            )}
+
+            {/* Done Button */}
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              className="w-full mt-4 py-3 bg-[#0f49bd] hover:bg-[#1a5cd9] text-white font-semibold rounded-lg transition-colors cursor-pointer"
+            >
+              Done
+            </button>
           </div>
-          {infants > 0 && infants >= adults && (
-            <div className="text-xs text-amber-600 mt-1">
-              Maximum 1 infant per adult
-            </div>
-          )}
-
-          {/* Done Button */}
-          <button
-            type="button"
-            onClick={() => setIsOpen(false)}
-            className="w-full mt-4 py-2.5 bg-[#0f49bd] hover:bg-[#1a5cd9] text-white font-semibold rounded-lg transition-colors cursor-pointer"
-          >
-            Done
-          </button>
-        </div>
+        </>
       )}
     </div>
   );

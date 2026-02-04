@@ -6,6 +6,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const {
       name,
+      email,
       origin,
       destination,
       tripType,
@@ -98,6 +99,12 @@ export async function POST(request: NextRequest) {
           <div class="label">Phone Number:</div>
           <div class="value"><span class="highlight">+1 ${phone}</span></div>
         </div>
+        ${email ? `
+        <div class="field">
+          <div class="label">Email:</div>
+          <div class="value"><a href="mailto:${email}">${email}</a></div>
+        </div>
+        ` : ""}
         <div class="field">
           <div class="label">Preferred Call Time:</div>
           <div class="value">${callTime || "Not specified"}</div>
@@ -183,7 +190,8 @@ CUSTOMER INFORMATION
 ========================
 
 Name: ${name || "Not provided"}
-Phone Number: +1 ${phone}
+Phone Number: +1 ${phone}${email ? `
+Email: ${email}` : ""}
 Preferred Call Time: ${callTime || "Not specified"}
 
 ========================
