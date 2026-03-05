@@ -9,17 +9,12 @@ export default function Header() {
   return (
     <header className="flex items-center justify-between bg-white/95 backdrop-blur-sm px-6 py-4 lg:px-20 sticky top-0 z-50 border-b border-gray-100/50">
       {/* Logo */}
-      <Link href="/" className="flex items-center gap-3">
-        <div className="relative">
-          <img 
-            src="/logo.jpeg" 
-            alt="TickToFly" 
-            className="h-11 w-11 object-cover rounded-full ring-2 ring-[#0f49bd]/20"
-          />
-        </div>
-        <h1 className="text-[#0f49bd] text-xl font-bold font-[family-name:var(--font-montserrat)] leading-tight tracking-tight">
-          TickToFly
-        </h1>
+      <Link href="/" className="flex items-center">
+        <img
+          src="/company_name_removed_bg.png"
+          alt="TicktoFLY"
+          className="h-14 object-contain"
+        />
       </Link>
 
       {/* Desktop Navigation */}

@@ -17,6 +17,11 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
+  icons: {
+    icon: '/new_logo.jpeg',
+    shortcut: '/new_logo.jpeg',
+    apple: '/new_logo.jpeg',
+  },
   title: "TickToFly Inc. | Where Every Journey Becomes a Tailored Adventure",
   description:
     "Specializing in vacation packages and complex itineraries, TickToFly offers travelers the freedom to explore the globe. Custom vacations, group travel coordination, and 24/7 VIP support.",

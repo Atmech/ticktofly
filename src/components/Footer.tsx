@@ -8,15 +8,17 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Company Info */}
           <div className="lg:col-span-2">
-          <Link href="/" className="flex items-center gap-3 mb-6">
+          <Link href="/" className="flex items-center gap-2 mb-6">
             <img
-              src="/logo.jpeg"
-              alt="TickToFly"
-              className="h-11 w-11 object-cover rounded-full ring-2 ring-white/20"
+              src="/new_logo.jpeg"
+              alt="TicktoFLY logo"
+              className="h-10 w-10 object-contain rounded-xl"
             />
-            <span className="text-xl font-[family-name:var(--font-montserrat)] font-bold">
-              TickToFly
-            </span>
+            <img
+              src="/company_name_removed_bg.png"
+              alt="TicktoFLY"
+              className="h-9 object-contain brightness-0 invert"
+            />
           </Link>
             <p className="text-gray-400 text-sm leading-relaxed max-w-md mb-6">
               Where Every Journey Becomes a Tailored Adventure. Specializing in vacation packages and complex itineraries, we offer travelers the freedom to explore the globe.
